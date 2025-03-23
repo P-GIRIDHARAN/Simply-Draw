@@ -2,13 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Paint</title>
+    <title>Paint App</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <button id="pencil" class="button" onclick="startpos">PENCIL</button>
-    <button id="eraser" class="button" onclick="startpos2">ERASER</button>
+    <div class="toolbar">
+      <button id="pencil">PENCIL</button>
+      <button id="eraser">ERASER</button>
+      <input type="color" id="colorPicker" value="#000000" />
+      <div id="colorDisplay"></div>
+      <input type="range" id="brushSize" min="1" max="50" value="10" />
+    </div>
     <canvas id="canvas"></canvas>
     <script src="paint.js"></script>
   </body>

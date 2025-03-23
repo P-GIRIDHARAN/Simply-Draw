@@ -1,60 +1,64 @@
 window.addEventListener("load", () => {
   const canvas = document.querySelector("#canvas");
   const ctx = canvas.getContext("2d");
-  const ctx1 = canvas.getContext("2d");
-  var erase = 0;
-  let color = true;
-  //Resizing the canvas
+  let painting = false;
+  let erase = false;
+  let brushColor = "#000000";
+  let brushSize = 10;
+  const colorDisplay = document.getElementById("colorDisplay");
+
+  // Resize canvas
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
 
-  let painting = false;
-
-  function startpos(e) {
+  function startPos(e) {
     painting = true;
     draw(e);
   }
-  function finishpos(e) {
+
+  function endPos() {
     painting = false;
     ctx.beginPath();
-    return;
   }
+
   function draw(e) {
     if (!painting) return;
-    if (erase == 0) {
-      ctx.lineWidth = 10;
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "black";
-      ctx.lineTo(e.clientX - 5, e.clientY - 25);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(e.clientX - 5, e.clientY - 25);
-    } else {
-      ctx.lineWidth = 10;
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "white";
-      ctx.lineTo(e.clientX - 5, e.clientY - 25);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(e.clientX - 5, e.clientY - 25);
-    }
-  }
-  document.getElementById("pencil").onclick = function () {
-    canvas.addEventListener("mousedown", startpos);
-    canvas.addEventListener("mousemove", draw);
-    canvas.addEventListener("mouseup", finishpos);
-    erase = 0;
-  };
-  document.getElementById("eraser").onclick = function () {
-    canvas.addEventListener("mousedown", startpos);
-    canvas.addEventListener("mousemove", draw);
-    canvas.addEventListener("mouseup", finishpos);
-    erase = 1;
-  };
-});
 
-window.addEventListener("resize", () => {
-  //Resizing the canvas
-  canvas.height = window.innerHeight;
-  canvas.width = window.innerWidth;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    ctx.lineWidth = brushSize;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = erase ? "#FFFFFF" : brushColor;
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  }
+
+  canvas.addEventListener("mousedown", startPos);
+  canvas.addEventListener("mouseup", endPos);
+  canvas.addEventListener("mousemove", draw);
+
+  document.getElementById("pencil").onclick = () => (erase = false);
+  document.getElementById("eraser").onclick = () => (erase = true);
+  document.getElementById("colorPicker").oninput = (e) => {
+    brushColor = e.target.value;
+    colorDisplay.style.backgroundColor = brushColor;
+  };
+  document.getElementById("brushSize").oninput = (e) =>
+    (brushSize = e.target.value);
+
+  // Initialize color display
+  colorDisplay.style.width = "30px";
+  colorDisplay.style.height = "30px";
+  colorDisplay.style.border = "2px solid black";
+  colorDisplay.style.display = "inline-block";
+  colorDisplay.style.backgroundColor = brushColor;
+
+  window.addEventListener("resize", () => {
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+  });
 });
